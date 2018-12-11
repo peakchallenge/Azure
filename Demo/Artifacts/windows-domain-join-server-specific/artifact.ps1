@@ -11,7 +11,7 @@ param
     [string] $DomainToJoin,
 
     [Parameter(Mandatory = $true)]
-    [string] $DomainServerName,
+    [string] $Server,
 
     [Parameter(Mandatory = $false)]
     [string] $OUPath
@@ -62,7 +62,7 @@ function Join-Domain
     [CmdletBinding()]
     param
     (
-        [string] $DomainServerName,
+        [string] $Server,
         [string] $DomainName,
         [string] $UserName,
         [securestring] $Password,
@@ -79,11 +79,11 @@ function Join-Domain
         
         if ($OUPath)
         {
-            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -OUPath $OUPath -Credential $credential -Server $DomainServerName -Force -PassThru
+            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -OUPath $OUPath -Credential $credential -Server $Server -Force -PassThru
         }
         else
         {
-            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -Credential $credential -Server $DomainServerName -Force -PassThru
+            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -Credential $credential -Server $Server -Force -PassThru
         }
         
         if (-not $computerChangeInfo.HasSucceeded)
