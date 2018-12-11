@@ -19,11 +19,6 @@
       "displayName": "Domain join password",
       "description": "The password for the domain join user account."
     },
-    "domainServerJoin": {
-      "type": "string",
-      "displayName": "Active Directory Domain Server",
-      "description": "The name of the Active Directory (AD) server that will proxy this domain join request."
-    },
     "domainToJoin": {
       "type": "string",
       "displayName": "Active Directory domain name",
