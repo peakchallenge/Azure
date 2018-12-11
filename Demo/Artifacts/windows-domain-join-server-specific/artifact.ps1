@@ -89,6 +89,7 @@ function Join-Domain
         if (-not $computerChangeInfo.HasSucceeded)
         {
             throw "Failed to join computer $($Env:COMPUTERNAME) to domain $DomainName."
+            write-host "Server: $Server, Domain: $DomainName, Username: $UserName, OUPath: $OUPath"
         }
         
         Write-Host "Computer $($Env:COMPUTERNAME) successfully joined domain $DomainName."
