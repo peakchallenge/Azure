@@ -30,6 +30,11 @@
       "description": "The OU path e.g. OU=Workstations,OU=Machines,DC=corp,DC=contoso,DC=com",
       "allowEmpty": true,
       "defaultValue": ""
+    },
+    "domainServerJoin": {
+      "type": "string",
+      "displayName": "Active Directory Domain Server",
+      "description": "The name of the Active Directory (AD) server that will proxy this domain join request."
     }
   },
   "runCommand": {
