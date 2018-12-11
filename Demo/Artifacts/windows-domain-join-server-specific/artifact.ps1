@@ -14,7 +14,7 @@ param
     [string] $OUPath,
     
     [Parameter(Mandatory = $true)]
-    [string] $domainServerJoin
+    [string] $DomainServerJoin
 )
 
 ###################################################################################################
@@ -65,7 +65,7 @@ function Join-Domain
         [string] $OUPath,
         [string] $UserName,
         [securestring] $Password,
-        [string] $domainServerJoin
+        [string] $DomainServerJoin
     )
 
     if ((Get-WmiObject Win32_ComputerSystem).Domain -eq $DomainName)
@@ -78,17 +78,17 @@ function Join-Domain
         
         if ($OUPath)
         {
-            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -OUPath $OUPath -Credential $credential -Server $domainServerJoin -Force -PassThru
+            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -OUPath $OUPath -Credential $credential -Server $DomainServerJoin -Force -PassThru
         }
         else
         {
-            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -Credential $credential -Server $domainServerJoin -Force -PassThru
+            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -Credential $credential -Server $DomainServerJoin -Force -PassThru
         }
         
         if (-not $computerChangeInfo.HasSucceeded)
         {
             throw "Failed to join computer $($Env:COMPUTERNAME) to domain $DomainName."
-            write-host "Server: $domainServerJoin, Domain: $DomainName, Username: $UserName, OUPath: $OUPath"
+            write-host "Server: $DomainServerJoin, Domain: $DomainName, Username: $UserName, OUPath: $OUPath"
         }
         
         Write-Host "Computer $($Env:COMPUTERNAME) successfully joined domain $DomainName."
@@ -109,7 +109,7 @@ try
 
     Write-Host "Attempting to join computer $($Env:COMPUTERNAME) to domain $DomainToJoin."
     $securePass = ConvertTo-SecureString $DomainAdminPassword -AsPlainText -Force
-    Join-Domain -DomainName $DomainToJoin -OUPath $OUPath -User $DomainAdminUsername -Password $securePass -Server $domainServerJoin 
+    Join-Domain -DomainName $DomainToJoin -OUPath $OUPath -User $DomainAdminUsername -Password $securePass -Server $DomainServerJoin 
 
     Write-Host 'Artifact applied successfully.'
 }
