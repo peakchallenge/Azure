@@ -19,7 +19,7 @@
       "displayName": "Domain join password",
       "description": "The password for the domain join user account."
     },
-    "Server": {
+    "domainServerJoin": {
       "type": "string",
       "displayName": "Active Directory Domain Server",
       "description": "The name of the Active Directory (AD) server that will proxy this domain join request."
@@ -38,7 +38,7 @@
     }
   },
   "runCommand": {
-    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact.ps1', ' -DomainAdminUsername ''', parameters('domainAdminUsername'), ''' -DomainAdminPassword ''', parameters('domainAdminPassword'), ''' -Server ''', parameters('Server'), ''' -DomainToJoin ', parameters('domainToJoin'), ' -OUPath ''', parameters('ouPath'), '''\"')]"
+    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact.ps1', ' -DomainAdminUsername ''', parameters('domainAdminUsername'), ''' -DomainAdminPassword ''', parameters('domainAdminPassword'), ''' -DomainToJoin ', parameters('domainToJoin'), ''' -Server ''', parameters('domainServerJoin'), ' -OUPath ''', parameters('ouPath'), '''\"')]"
   },
   "postDeployActions": [
     {
