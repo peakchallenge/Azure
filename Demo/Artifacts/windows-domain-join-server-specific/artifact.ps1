@@ -79,11 +79,11 @@ function Join-Domain
         
         if ($OUPath)
         {
-            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -Server $DomainServerName -Credential $credential -OUPath $OUPath -Force -PassThru
+            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -OUPath $OUPath -Credential $credential -Server $DomainServerName -Force -PassThru
         }
         else
         {
-            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -Server $DomainServerName -Credential $credential -Force -PassThru
+            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -Credential $credential -Server $DomainServerName -Force -PassThru
         }
         
         if (-not $computerChangeInfo.HasSucceeded)
@@ -109,7 +109,7 @@ try
 
     Write-Host "Attempting to join computer $($Env:COMPUTERNAME) to domain $DomainToJoin."
     $securePass = ConvertTo-SecureString $DomainAdminPassword -AsPlainText -Force
-    Join-Domain -DomainName $DomainToJoin -User $DomainAdminUsername -Password $securePass -OUPath $OUPath -Server $DomainServerName
+    Join-Domain -DomainName $DomainToJoin -OUPath $OUPath -User $DomainAdminUsername -Password $securePass -Server $DomainServerName
 
     Write-Host 'Artifact applied successfully.'
 }
