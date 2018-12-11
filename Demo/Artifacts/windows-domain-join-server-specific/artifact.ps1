@@ -109,7 +109,7 @@ try
 
     Write-Host "Attempting to join computer $($Env:COMPUTERNAME) to domain $DomainToJoin."
     $securePass = ConvertTo-SecureString $DomainAdminPassword -AsPlainText -Force
-    Join-Domain -DomainName $DomainToJoin -OUPath $OUPath -User $DomainAdminUsername -Password $securePass -Server $DomainServerName
+    Join-Domain -DomainName $DomainToJoin -OUPath $OUPath -User $DomainAdminUsername -Password $securePass
 
     Write-Host 'Artifact applied successfully.'
 }
