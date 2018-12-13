@@ -2,16 +2,16 @@
 param
 (
     [Parameter(Mandatory = $true)]
+    [string] $DomainToJoin,
+    
+    [Parameter(Mandatory = $false)]
+    [string] $OUPath,
+    
+    [Parameter(Mandatory = $true)]
     [string] $DomainAdminUsername,
 
     [Parameter(Mandatory = $true)]
     [string] $DomainAdminPassword,
-
-    [Parameter(Mandatory = $true)]
-    [string] $DomainToJoin,
-
-    [Parameter(Mandatory = $false)]
-    [string] $OUPath,
     
     [Parameter(Mandatory = $true)]
     [string] $DomainServerJoin
@@ -59,6 +59,7 @@ trap
 
 function Join-Domain 
 {
+    [CmdletBinding()]
     param
     (
         [string] $DomainName,
