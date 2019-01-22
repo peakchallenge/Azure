@@ -13,6 +13,7 @@
       "type": "string",
       "displayName": "Active Directory domain name",
       "description": "The name of the Active Directory (AD) domain to join (e.g. corp.contoso.com)."
+      "defaultValue": ""
     },
     "ouPath": {
       "type": "string",
@@ -38,7 +39,7 @@
     }
   },
   "runCommand": {
-    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact.ps1', ' -DomainAdminUsername ''', parameters('domainAdminUsername'), ''' -DomainAdminPassword ''', parameters('domainAdminPassword'), ''' -DomainToJoin ', parameters('domainToJoin'), ''' -OUPath ''', parameters('ouPath'), '''\"')]"
+    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact.ps1', ' -DomainAdminUsername ''', parameters('domainAdminUsername'), ''' -DomainAdminPassword ''', parameters('domainAdminPassword'), ''' -DomainToJoin ''', parameters('domainToJoin'), ''' -OUPath ''', parameters('ouPath'), '''\"')]"
   },
   "postDeployActions": [
     {
