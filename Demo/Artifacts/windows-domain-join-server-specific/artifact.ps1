@@ -64,7 +64,7 @@ function Join-Domain
     (
         [string] $DomainName,
         [string] $OUPath,
-        [string] $UserName,
+        [string] $User,
         [securestring] $Password,
         [string] $DomainServerJoin
     )
