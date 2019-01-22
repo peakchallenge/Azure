@@ -13,7 +13,6 @@
       "type": "string",
       "displayName": "Active Directory domain name",
       "description": "The name of the Active Directory (AD) domain to join (e.g. corp.contoso.com)."
-      "defaultValue": ""
     },
     "ouPath": {
       "type": "string",
