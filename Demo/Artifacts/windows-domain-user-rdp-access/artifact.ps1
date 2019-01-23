@@ -11,8 +11,10 @@ if(!(Test-Path -Path $logfilePATH )){
 }
 
 # Create the log file, make sure c:\temp already exists
-$file = Join-Path -Path (Resolve-Path "c:\Temp\") -ChildPath "artifactlog.txt"
-New-Item $file -type file | Out-Null
+if(!(Test-Path $logfilePATH\artifactlog.txt)){
+    $file = Join-Path -Path (Resolve-Path "c:\Temp\") -ChildPath "artifactlog.txt"
+    New-Item $file -type file | Out-Null
+}
 
 # Add content to the log file, can add these debugging statements throughout your powershell to identify which line is hanging
 Add-Content -Path $file -Value "Beginning Script Process - starting log after Params"
