@@ -75,8 +75,9 @@ try
     write-host "Attempting to add Users to RDP Group."
     
     foreach ($allowRDPUser in $allowRDP){
-        Add-Content -Path $file -Value "Attempting to add Users to RDP Group - $allowRDP"
-        Add-LocalGroupMember -Group "Remote Desktop Users" -Member "$allowRDPUser"
+        Add-Content -Path $file -Value "Attempting to add Users to RDP Group - $allowRDPUser"
+        #Add-LocalGroupMember -Group "Remote Desktop Users" -Member "$allowRDPUser"
+        NET LOCALGROUP "Remote Desktop Users" $allowRDPUser /ADD
     }
 
     Add-Content -Path $file -Value "Entering Main Script Block (try) - Artifact Applied Successfully"
