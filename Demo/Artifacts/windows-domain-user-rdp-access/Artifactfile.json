@@ -12,7 +12,7 @@
       "allowDomainUserRDP": {
       "type": "string",
       "displayName": "RDP Permissions to be granted to:",
-      "description": "Please specify one or more users in the following way &#60;domain&#62;&#92;&#60domain user&#62,&#60domain&#62;&#92;&#60domain user&#62 ...etc..."
+      "description": "Please specify one or more users in the following way &#34;&#60;domain&#62;&#92;&#60domain user&#62;&#34;,&#34;&#60domain&#62;&#92;&#60domain user&#62;&#34 ...etc..."
     }
   },
   "runCommand": {
