@@ -68,7 +68,8 @@ function Join-Domain
         [securestring] $Password,
         [string] $DomainServer
     )
-
+	write-host "$DomainName,$OUPath,$User,$Password,$DomainServer" | Out-File -FilePath .\ProcessOutput.txt -Append
+	
     if ((Get-WmiObject Win32_ComputerSystem).Domain -eq $DomainName)
     {
         Write-Host "Computer $($Env:COMPUTERNAME) is already joined to domain $DomainName."
@@ -79,20 +80,22 @@ function Join-Domain
         
         if ($OUPath)
         {
-            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -OUPath "$OUPath" -Credential $credential -Server $DomainServerJoin -Force -PassThru
+            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -OUPath $OUPath -Credential $credential -Server $DomainServerJoin -Force -PassThru
+			write-host "$DomainName,$OUPath,$User,$Password,$DomainServer" | Out-File -FilePath .\ProcessOutput.txt -Append
         }
         else
         {
             [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -Credential $credential -Server $DomainServerJoin -Force -PassThru
+			write-host "$DomainName,$User,$Password,$DomainServer" | Out-File -FilePath .\ProcessOutput.txt -Append
         }
         
         if (-not $computerChangeInfo.HasSucceeded)
         {
             throw "Failed to join computer $($Env:COMPUTERNAME) to domain $DomainName."
-            write-host "Server: $DomainServerJoin, Domain: $DomainName, Username: $UserName, OUPath: $OUPath"
+            write-host "Server: $DomainServerJoin, Domain: $DomainName, Username: $UserName, OUPath: $OUPath" | Out-File -FilePath .\ProcessOutput.txt -Append
         }
         
-        Write-Host "Computer $($Env:COMPUTERNAME) successfully joined domain $DomainName."
+        Write-Host "Computer $($Env:COMPUTERNAME) successfully joined domain $DomainName." | Out-File -FilePath .\ProcessOutput.txt -Append
     }
 }
 
@@ -108,7 +111,7 @@ try
         throw "The current version of PowerShell is $($PSVersionTable.PSVersion.Major). Prior to running this artifact, ensure you have PowerShell 3 or higher installed."
     }
 
-    Write-Host "Attempting to join computer $($Env:COMPUTERNAME) to domain $DomainToJoin."
+    Write-Host "Attempting to join computer $($Env:COMPUTERNAME) to domain $DomainToJoin." | Out-File -FilePath .\ProcessOutput.txt -Append
     $securePass = ConvertTo-SecureString $DomainAdminPassword -AsPlainText -Force
     Join-Domain -DomainName $DomainToJoin -OUPath "$OUPath" -User $DomainAdminUsername -Password $securePass -DomainServer $DomainServerJoin 
 
