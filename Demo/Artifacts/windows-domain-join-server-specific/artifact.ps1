@@ -1,3 +1,21 @@
+param
+(
+    [Parameter(Mandatory = $true)]
+    [string] $DomainToJoin,
+    
+    [Parameter(Mandatory = $true)]
+    [string] $OUPath,
+    
+    [Parameter(Mandatory = $true)]
+    [string] $DomainAdminUsername,
+
+    [Parameter(Mandatory = $true)]
+    [string] $DomainAdminPassword,
+    
+    [Parameter(Mandatory = $true)]
+    [string] $DomainServerJoin
+)
+
 $logfilePATH = "C:\Temp"
 
 if(!(Test-Path -Path $logfilePATH )){
