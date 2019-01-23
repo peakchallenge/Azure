@@ -73,7 +73,7 @@ trap
 
 function Join-Domain 
 {
-    [CmdletBinding()]
+    #[CmdletBinding()]
     param
     (
         [string] $DomainName,
@@ -130,7 +130,7 @@ try
     write-host "Attempting to join computer $($Env:COMPUTERNAME) to domain $DomainToJoin."
     Add-Content -Path $file -Value "Entering Main Script Block (try) - $DomainToJoin,$OUPath,$DomainAdminUsername,$DomainAdminPassword,$DomainServerJoin"
     $securePass = ConvertTo-SecureString $DomainAdminPassword -AsPlainText -Force
-    Join-Domain -DomainName $DomainToJoin -OUPath "$OUPath" -User $DomainAdminUsername -Password $securePass -DomainServer $DomainServerJoin 
+    Join-Domain -DomainName $DomainToJoin -OUPath $OUPath -User $DomainAdminUsername -Password $securePass -DomainServer $DomainServerJoin 
 
     Write-Host 'Artifact applied successfully.'
     Add-Content -Path $file -Value "Entering Main Script Block (try) - Artifact Applied Successfully"
