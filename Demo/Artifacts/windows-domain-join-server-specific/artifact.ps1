@@ -17,6 +17,20 @@ param
     [string] $DomainServerJoin
 )
 
+$logfilePATH = "C:\Temp"
+
+if(!(Test-Path -Path $logfilePATH )){
+    New-Item -ItemType directory -Path $logfilePATH
+}
+
+# Create the log file, make sure c:\temp already exists
+$file = Join-Path -Path (Resolve-Path "c:\Temp\") -ChildPath "artifactlog.txt"
+New-Item $file -type file | Out-Null
+
+# Add content to the log file, can add these debugging statements throughout your powershell to identify which line is hanging
+Add-Content -Path $file -Value "Beginning Script Process - starting log after Params"
+
+
 ###################################################################################################
 #
 # PowerShell configurations
@@ -49,6 +63,7 @@ trap
     # NOT use -File when calling this script and leverage the try-catch-finally block and return
     # a non-zero exit code from the catch block.
     Write-Host 'Artifact failed to apply.'
+    Add-Content -Path $file -Value "Artifact failed to apply."
     exit -1
 }
 
@@ -68,7 +83,7 @@ function Join-Domain
         [securestring] $Password,
         [string] $DomainServer
     )
-	echo "$DomainName,$OUPath,$User,$Password,$DomainServer" >> ProcessOutput.txt
+	Add-Content -Path $file -Value "Entering Join-Domain Function, logging after Params: -$DomainName,$OUPath,$User,$Password,$DomainServer"
 	
     if ((Get-WmiObject Win32_ComputerSystem).Domain -eq $DomainName)
     {
@@ -81,21 +96,23 @@ function Join-Domain
         if ($OUPath)
         {
             [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -OUPath $OUPath -Credential $credential -Server $DomainServerJoin -Force -PassThru
-			echo "$DomainName,$OUPath,$User,$Password,$DomainServer" >> ProcessOutput.txt
+			Add-Content -Path $file -Value "Entering IF when OU is provided: -$DomainName,$OUPath,$User,$Password,$DomainServer"
         }
         else
         {
             [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -Credential $credential -Server $DomainServerJoin -Force -PassThru
-			echo "$DomainName,$User,$Password,$DomainServer" >> ProcessOutput.txt
+			Add-Content -Path $file -Value "Entering IF when OU is NOT provided: -$DomainName,$User,$Password,$DomainServer"
         }
         
         if (-not $computerChangeInfo.HasSucceeded)
         {
             throw "Failed to join computer $($Env:COMPUTERNAME) to domain $DomainName."
-            echo "Server: $DomainServerJoin, Domain: $DomainName, Username: $UserName, OUPath: $OUPath failed to connect to $DomainName" >> ProcessOutput.txt
+	    write-host "Computer $($Env:COMPUTERNAME) failed to joined domain $DomainName."
+	    Add-Content -Path $file -Value "Logging if AD Join Failed - $DomainName,$OUPath,$User,$Password,$DomainServer"
         }
         
-        echo "Computer $($Env:COMPUTERNAME) successfully joined domain $DomainName." >> ProcessOutput.txt
+        write-host "Computer $($Env:COMPUTERNAME) successfully joined domain $DomainName."
+	Add-Content -Path $file -Value "Logging if AD Join was Successful - $DomainName,$OUPath,$User,$Password,$DomainServer"
     }
 }
 
@@ -111,11 +128,13 @@ try
         throw "The current version of PowerShell is $($PSVersionTable.PSVersion.Major). Prior to running this artifact, ensure you have PowerShell 3 or higher installed."
     }
 
-    echo "Attempting to join computer $($Env:COMPUTERNAME) to domain $DomainToJoin." >> ProcessOutput.txt
+    write-host "Attempting to join computer $($Env:COMPUTERNAME) to domain $DomainToJoin."
+    Add-Content -Path $file -Value "Entering Main Script Block (try) - $DomainName,$OUPath,$User,$Password,$DomainServer"
     $securePass = ConvertTo-SecureString $DomainAdminPassword -AsPlainText -Force
     Join-Domain -DomainName $DomainToJoin -OUPath "$OUPath" -User $DomainAdminUsername -Password $securePass -DomainServer $DomainServerJoin 
 
     Write-Host 'Artifact applied successfully.'
+    Add-Content -Path $file -Value "Entering Main Script Block (try) - Artifact Applied Successfully"
 }
 finally
 {
