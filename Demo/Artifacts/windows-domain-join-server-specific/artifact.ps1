@@ -86,21 +86,23 @@ function Join-Domain
 	
     if ((Get-WmiObject Win32_ComputerSystem).Domain -eq $DomainName)
     {
+        Add-Content -Path $file -Value "Server already Joined to domain!"
         Write-Host "Computer $($Env:COMPUTERNAME) is already joined to domain $DomainName."
     }
     else
     {
+    	Add-Content -Path $file -Value "Entering First ELSE clause: -$DomainName,$User,$Password,$DomainServer"
         $credential = New-Object System.Management.Automation.PSCredential($User, $Password)
         
         if ($OUPath)
         {
+	    Add-Content -Path $file -Value "Entering IF when OU is provided: -$DomainName,$OUPath,$User,$Password,$DomainServer"
             [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -OUPath $OUPath -Credential $credential -Server $DomainServerJoin -Force -PassThru
-			Add-Content -Path $file -Value "Entering IF when OU is provided: -$DomainName,$OUPath,$User,$Password,$DomainServer"
         }
         else
         {
+	    Add-Content -Path $file -Value "Entering IF when OU is NOT provided: -$DomainName,$User,$Password,$DomainServer"
             [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -Credential $credential -Server $DomainServerJoin -Force -PassThru
-			Add-Content -Path $file -Value "Entering IF when OU is NOT provided: -$DomainName,$User,$Password,$DomainServer"
         }
         
         if (-not $computerChangeInfo.HasSucceeded)
@@ -109,9 +111,8 @@ function Join-Domain
 	    write-host "Computer $($Env:COMPUTERNAME) failed to joined domain $DomainName."
 	    Add-Content -Path $file -Value "Logging if AD Join Failed - $DomainName,$OUPath,$User,$Password,$DomainServer"
         }
-        
+        Add-Content -Path $file -Value "Logging if AD Join was Successful - $DomainName,$OUPath,$User,$Password,$DomainServer"
         write-host "Computer $($Env:COMPUTERNAME) successfully joined domain $DomainName."
-	Add-Content -Path $file -Value "Logging if AD Join was Successful - $DomainName,$OUPath,$User,$Password,$DomainServer"
     }
 }
 
@@ -128,12 +129,12 @@ try
     }
 
     write-host "Attempting to join computer $($Env:COMPUTERNAME) to domain $DomainToJoin."
-    Add-Content -Path $file -Value "Entering Main Script Block (try) - $DomainToJoin,$OUPath,$DomainAdminUsername,$DomainAdminPassword,$DomainServerJoin"
+    Add-Content -Path $file -Value "Entering Main Script Block (try) function - $DomainToJoin,$OUPath,$DomainAdminUsername,$DomainAdminPassword,$DomainServerJoin"
     $securePass = ConvertTo-SecureString $DomainAdminPassword -AsPlainText -Force
-    Join-Domain -DomainName $DomainToJoin -OUPath $OUPath -User $DomainAdminUsername -Password $securePass -DomainServer $DomainServerJoin 
+    Join-Domain -DomainName $DomainToJoin -OUPath "$OUPath" -User $DomainAdminUsername -Password $securePass -DomainServer $DomainServerJoin 
 
-    Write-Host 'Artifact applied successfully.'
     Add-Content -Path $file -Value "Entering Main Script Block (try) - Artifact Applied Successfully"
+    Write-Host 'Artifact applied successfully.'
 }
 finally
 {
