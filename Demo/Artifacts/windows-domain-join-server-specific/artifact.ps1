@@ -29,6 +29,9 @@ $ErrorActionPreference = "Stop"
 # Ensure we set the working directory to that of the script.
 Push-Location $PSScriptRoot
 
+# Define a timeout period as the default for Azure is too high
+$Timeout = 300      # 5 minutes initially
+
 ###################################################################################################
 #
 # Handle all errors in this script.
@@ -107,12 +110,13 @@ try
     {
         throw "The current version of PowerShell is $($PSVersionTable.PSVersion.Major). Prior to running this artifact, ensure you have PowerShell 3 or higher installed."
     }
-
+    $timer = [Diagnostics.Stopwatch]::StartNew()
     Write-Host "Attempting to join computer $($Env:COMPUTERNAME) to domain $DomainToJoin."
     $securePass = ConvertTo-SecureString $DomainAdminPassword -AsPlainText -Force
-    Join-Domain -DomainName $DomainToJoin -OUPath $OUPath -User $DomainAdminUsername -Password $securePass -Server $DomainServerJoin 
-
-    Write-Host 'Artifact applied successfully.'
+    Join-Domain -DomainName $DomainToJoin -OUPath "$OUPath" -User $DomainAdminUsername -Password "$securePass" -Server $DomainServerJoin 
+    $timer.Stop()
+    $totalSecs = [math]::Round($timer.Elapsed.TotalSeconds,0)
+    Write-Host 'Artifact applied successfully, within $totalSecs seconds'
 }
 finally
 {
