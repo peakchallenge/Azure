@@ -82,7 +82,7 @@ function Join-Domain
         [securestring] $Password,
         [string] $DomainServer
     )
-	Add-Content -Path $file -Value "Entering Join-Domain Function, logging after Params: -$DomainName,$OUPath,$User,$Password,$DomainServer"
+	Add-Content -Path $file -Value "Entering Join-Domain Function, logging after Params: $DomainName,$OUPath,$User,$Password,$DomainServer"
 	
     if ((Get-WmiObject Win32_ComputerSystem).Domain -eq $DomainName)
     {
@@ -91,17 +91,17 @@ function Join-Domain
     }
     else
     {
-    	Add-Content -Path $file -Value "Entering First ELSE clause: -$DomainName,$User,$Password,$DomainServer"
+    	Add-Content -Path $file -Value "Entering First ELSE clause: $DomainName,$User,$Password,$DomainServer"
         $credential = New-Object System.Management.Automation.PSCredential($User, $Password)
         
         if ($OUPath)
         {
-	    Add-Content -Path $file -Value "Entering IF when OU is provided: -$DomainName,$OUPath,$User,$Password,$DomainServer"
+	    Add-Content -Path $file -Value "Entering IF when OU is provided: $DomainName,$OUPath,$User,$Password,$DomainServer"
             [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -OUPath $OUPath -Credential $credential -Server $DomainServerJoin -Force -PassThru
         }
         else
         {
-	    Add-Content -Path $file -Value "Entering IF when OU is NOT provided: -$DomainName,$User,$Password,$DomainServer"
+	    Add-Content -Path $file -Value "Entering IF when OU is NOT provided: $DomainName,$User,$Password,$DomainServer"
             [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -Credential $credential -Server $DomainServerJoin -Force -PassThru
         }
         
@@ -130,7 +130,7 @@ try
 
     write-host "Attempting to join computer $($Env:COMPUTERNAME) to domain $DomainToJoin."
     Add-Content -Path $file -Value "Entering Main Script Block (try) function - $DomainToJoin,$OUPath,$DomainAdminUsername,$DomainAdminPassword,$DomainServerJoin"
-    $securePass = ConvertTo-SecureString $DomainAdminPassword -AsPlainText -Force
+    $securePass = ConvertTo-SecureString "$DomainAdminPassword" -AsPlainText -Force
     Join-Domain -DomainName $DomainToJoin -OUPath "$OUPath" -User $DomainAdminUsername -Password $securePass -DomainServer $DomainServerJoin 
 
     Add-Content -Path $file -Value "Entering Main Script Block (try) - Artifact Applied Successfully"
