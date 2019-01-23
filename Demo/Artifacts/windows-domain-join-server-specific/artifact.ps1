@@ -4,7 +4,7 @@ param
     [Parameter(Mandatory = $true)]
     [string] $DomainToJoin,
     
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $true)]
     [string] $OUPath,
     
     [Parameter(Mandatory = $true)]
@@ -28,9 +28,6 @@ $ErrorActionPreference = "Stop"
 
 # Ensure we set the working directory to that of the script.
 Push-Location $PSScriptRoot
-
-# Define a timeout period as the default for Azure is too high
-$Timeout = 300      # 5 minutes initially
 
 ###################################################################################################
 #
@@ -69,7 +66,7 @@ function Join-Domain
         [string] $OUPath,
         [string] $User,
         [securestring] $Password,
-        [string] $DomainServerJoin
+        [string] $DomainServer
     )
 
     if ((Get-WmiObject Win32_ComputerSystem).Domain -eq $DomainName)
@@ -78,11 +75,11 @@ function Join-Domain
     }
     else
     {
-        $credential = New-Object System.Management.Automation.PSCredential($UserName, $Password)
+        $credential = New-Object System.Management.Automation.PSCredential($User, $Password)
         
         if ($OUPath)
         {
-            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -OUPath $OUPath -Credential $credential -Server $DomainServerJoin -Force -PassThru
+            [Microsoft.PowerShell.Commands.ComputerChangeInfo]$computerChangeInfo = Add-Computer -DomainName $DomainName -OUPath "$OUPath" -Credential $credential -Server $DomainServerJoin -Force -PassThru
         }
         else
         {
@@ -110,13 +107,12 @@ try
     {
         throw "The current version of PowerShell is $($PSVersionTable.PSVersion.Major). Prior to running this artifact, ensure you have PowerShell 3 or higher installed."
     }
-    $timer = [Diagnostics.Stopwatch]::StartNew()
+
     Write-Host "Attempting to join computer $($Env:COMPUTERNAME) to domain $DomainToJoin."
     $securePass = ConvertTo-SecureString $DomainAdminPassword -AsPlainText -Force
-    Join-Domain -DomainName $DomainToJoin -OUPath "$OUPath" -User $DomainAdminUsername -Password "$securePass" -Server $DomainServerJoin 
-    $timer.Stop()
-    $totalSecs = [math]::Round($timer.Elapsed.TotalSeconds,0)
-    Write-Host 'Artifact applied successfully, within $totalSecs seconds'
+    Join-Domain -DomainName $DomainToJoin -OUPath "$OUPath" -User $DomainAdminUsername -Password $securePass -DomainServer $DomainServerJoin 
+
+    Write-Host 'Artifact applied successfully.'
 }
 finally
 {
