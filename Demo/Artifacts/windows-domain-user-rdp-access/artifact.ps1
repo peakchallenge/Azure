@@ -15,6 +15,8 @@ if(!(Test-Path -Path $logfilePATH )){
 if(!(Test-Path "$logfilePATH\$logfile")){
     $file = Join-Path -Path (Resolve-Path "$logfilePATH") -ChildPath "$logfile"
     New-Item $file -type file | Out-Null
+} else {
+    $file = Join-Path -Path (Resolve-Path "$logfilePATH") -ChildPath "$logfile"
 }
 
 # Add content to the log file, can add these debugging statements throughout your powershell to identify which line is hanging
