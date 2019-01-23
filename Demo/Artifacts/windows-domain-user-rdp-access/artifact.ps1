@@ -5,14 +5,15 @@ param
 )
 
 $logfilePATH = "C:\Temp"
+$logfile = "artifactlog.txt"
 
 if(!(Test-Path -Path $logfilePATH )){
     New-Item -ItemType directory -Path $logfilePATH
 }
 
 # Create the log file, make sure c:\temp already exists
-if(!(Test-Path $logfilePATH\artifactlog.txt)){
-    $file = Join-Path -Path (Resolve-Path "c:\Temp\") -ChildPath "artifactlog.txt"
+if(!(Test-Path "$logfilePATH\$logfile")){
+    $file = Join-Path -Path (Resolve-Path "$logfilePATH") -ChildPath "$logfile"
     New-Item $file -type file | Out-Null
 }
 
