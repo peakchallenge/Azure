@@ -72,7 +72,7 @@ trap
 
 try
 {
-    if ($PSVersionTable.PSVersion.Major -lt 3)
+    if ($PSVersionTable.PSVersion.Major -lt 5)
     {
         throw "The current version of PowerShell is $($PSVersionTable.PSVersion.Major). Prior to running this artifact, ensure you have PowerShell 3 or higher installed."
     }
@@ -81,9 +81,9 @@ try
     
     foreach ($allowRDPUser in ($allowRDP -split ",")){
         Add-Content -Path $file -Value "Attempting to add Users to RDP Group - $allowRDPUser"
-        #Add-LocalGroupMember -Group "Remote Desktop Users" -Member "$allowRDPUser"
+        Add-LocalGroupMember -Group "Remote Desktop Users" -Member $allowRDPUser
         write-host "$allowRDPUser"
-        NET LOCALGROUP "Remote Desktop Users" $allowRDPUser /ADD
+        #NET LOCALGROUP "Remote Desktop Users" $allowRDPUser /ADD
     }
 
     Add-Content -Path $file -Value "Entering Main Script Block (try) - Artifact Applied Successfully"
