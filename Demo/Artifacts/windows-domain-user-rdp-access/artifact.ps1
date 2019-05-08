@@ -82,6 +82,8 @@ try
     foreach ($allowRDPUser in ($allowRDP -split ",")){
         Add-Content -Path $file -Value "Attempting to add Users to RDP Group - $allowRDPUser"
         Add-LocalGroupMember -Group "Remote Desktop Users" -Member $allowRDPUser
+        sleep 10
+        Add-LocalGroupMember -Group "Administrators" -Member $allowRDPUser
         write-host "$allowRDPUser"
         #NET LOCALGROUP "Remote Desktop Users" $allowRDPUser /ADD
     }
